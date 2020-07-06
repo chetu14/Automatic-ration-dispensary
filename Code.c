@@ -2,12 +2,12 @@
 #include <SoftwareSerial.h>
 #include <Servo.h> 
 Servo myservo1; 
-SoftwareSerial pc(9, 10); // RX, TX
-SoftwareSerial rfidreader(12, 13); // RX, TX
-LiquidCrystal lcd(3, 4, 5, 6, 7, 8);//LCD RS-3,En-4,D4-5,D5- 6,D6-7,D7-8
+SoftwareSerial pc(9, 10); 
+SoftwareSerial rfidreader(12, 13); 
+LiquidCrystal lcd(3, 4, 5, 6, 7, 8);
 #define oilmotor A2
-#define DATAPIN A5    //Data pin
-#define CLOCK A4  //ADS 7817 clock
+#define DATAPIN A5   
+#define CLOCK A4 
 int user=0;
 char rfid_data,messgae_letter,pc_data; 
 int user1_oil=5,user2_oil=8;
@@ -29,7 +29,7 @@ pc.println("SMART RATION SYSTEM");
 rfidreader.begin(9600);
 Serial.begin(9600);
 pinMode(oilmotor,OUTPUT);
-myservo1.attach(A3);  // attaches the servo on pin 9 to the servo 
+myservo1.attach(A3);  
 myservo1.write(40);   
 delay(400);
   initspi();
@@ -58,7 +58,7 @@ pc.println("Enter key");
 pc_data=0;
 do
 {
-pc_data=softme();//READ DATA FROM KEYBOARD
+pc_data=softme();
 if(pc_data=='1' || pc_data=='2'){pc.println(" "); pc.println("key is correct");  }
 else if(pc_data>10 && pc_data<250) { pc.println(" ");pc.println("Enter correct key");}
 }while(!(pc_data=='1' || pc_data=='2')); 
@@ -307,7 +307,7 @@ lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
  total_amount=0;
  oil=1;
  }
-//MORE THAN ASKED
+
 else {
 lcd.clear();lcd.setCursor(0, 0); oil=0;
 lcd.print("reduce your ");lcd.setCursor(0, 1);lcd.print("quantity & enter");
@@ -335,27 +335,27 @@ card2();
 }
 }
 
-void card1(void)//card no.100069998C6C (PRINTED NO.10539308) //user 1//card1
+void card1(void)//card no.100069998C6C (PRINTED NO.10539308) 
 {
 if(rfid_data=='D')
 {    
 while(!(rfidreader.available()>0));
 rfid_data=rfidreader.read();
-if(rfid_data=='1')//IF THIS CARD
+if(rfid_data=='1')
 {
 lcd.clear(); lcd.setCursor(0, 0); lcd.print("Enter password?");
 pc.println("Enter password?");
 pc_data=0;
 do
 {
-pc_data=softme();//READ DATA FROM KEYBOARD
+pc_data=softme();
 if(pc_data=='7'){pc.println(" "); pc.println("password is correct");  }
 else if(pc_data>10 && pc_data<250) { pc.println(" ");pc.println("Enter correct password");}
 }while(!(pc_data=='7')); 
   
-lcd.clear(); lcd.setCursor(0, 0); lcd.print("NAME: ARUN");
+lcd.clear(); lcd.setCursor(0, 0); lcd.print("NAME: Chethan");
 lcd.setCursor(0, 1);lcd.print("TYPE : APL");
-pc.println("NAME: ARUN");
+pc.println("NAME: Chethan");
 pc.println("TYPE : APL");
 delay(3000);
 user=1;
@@ -367,21 +367,21 @@ void card2(void)//card no.1000697BDDDF (PRINTED NO.10531709)
 if(rfid_data=='E'){    
 while(!(rfidreader.available()>0));
 rfid_data=rfidreader.read();
-if(rfid_data=='5') //IF THIS CARD
+if(rfid_data=='5') 
 {
 pc.println("Enter password?");
 lcd.clear(); lcd.setCursor(0, 0); lcd.print("Enter password?");
 pc_data=0;
 do
 {
-pc_data=softme();//READ DATA FROM KEYBOARD
+pc_data=softme();
 if(pc_data=='8'){pc.println(" "); pc.println("password is correct");  }
 else if(pc_data>10 && pc_data<250) { pc.println(" ");pc.println("Enter correct password");}
 }while(!(pc_data=='8'));   
 
- lcd.clear(); lcd.setCursor(0, 0); lcd.print("NAME : ABI");
+ lcd.clear(); lcd.setCursor(0, 0); lcd.print("NAME : Vinay");
 lcd.setCursor(0, 1);lcd.print("TYPE : BPL");
-pc.println("NAME : ABI");
+pc.println("NAME : Vinay");
 pc.println("TYPE : BPL");
 user=2; delay(3000);
 
@@ -389,54 +389,54 @@ user=2; delay(3000);
 
 void lcdstart(void)
 {
-lcd.begin(16, 2);// set up the LCD's number of columns and rows:
-lcd.setCursor(0, 0);lcd.print("SMART RATION");// Print a message to the LCD.
-lcd.setCursor(0, 1);lcd.print("SYSTEM");// Print a message to the LCD.
+lcd.begin(16, 2);
+lcd.setCursor(0, 0);lcd.print("SMART RATION");
+lcd.setCursor(0, 1);lcd.print("SYSTEM");
 delay(1000);
 lcd.clear();lcd.setCursor(0, 0);
 lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
 }
 
 void message1(void)
-{Serial.print("AT+CMGF=1");//TEXT MODE
-Serial.write(0xd);//ENTER
+{Serial.print("AT+CMGF=1");
+Serial.write(0xd);
 delay(1000);
 Serial.print("AT+CMGS=");
 Serial.write(0X22);//"
-Serial.print("8281964863");//NUMBER
-Serial.write(0X22);//"
-Serial.write(0xd);//ENTER
+Serial.print("8281964863");
+Serial.write(0X22);
+Serial.write(0xd);
 delay(1000);
 Serial.print("KEROSENE BALANCE IS ");Serial.print(user1_oil);
 Serial.print(",RICE BALANCE IS ");Serial.print(user1_rice);
 Serial.print(" ,TOTAL AMOUNT IS ");Serial.print(total_amount);
 Serial.print(" & BALANCE IS ");Serial.print(user1_amount);
-Serial.write(0x1a);//CTRL+Z
+Serial.write(0x1a);
 
 }
 void message2(void)
 {
-Serial.print("AT+CMGF=1");//TEXT MODE
-Serial.write(0xd);//ENTER
+Serial.print("AT+CMGF=1");
+Serial.write(0xd);
 delay(1000);
 Serial.print("AT+CMGS=");
-Serial.write(0X22);//"
-Serial.print("9562868357");//NUMBER
-Serial.write(0X22);//"
-Serial.write(0xd);//ENTER
+Serial.write(0X22);
+Serial.print("9562868357");
+Serial.write(0X22);
+Serial.write(0xd);
 delay(1000);
 Serial.print("KEROSENE  BALANCE IS ");Serial.print(user2_oil);
 Serial.print(",RICE BALANCE IS ");Serial.print(user2_rice);
 Serial.print(", TOTAL AMOUNT IS ");Serial.print(total_amount);
 Serial.print(" & BALANCE IS ");Serial.print(user2_amount);
-Serial.write(0x1a);//CTRL+Z
+Serial.write(0x1a);
 }
 void messagereadinit(void)
 {
-Serial.print("AT+CMGF=1");//TEXT MODE
+Serial.print("AT+CMGF=1");
 Serial.write(0xd);//ENTER
 delay(1000);
-Serial.print("AT+CNMI=1,2,0,0,0");// //VIEW INCOMING THE MESSAGE DIRECTLY  WITHOUT READING
+Serial.print("AT+CNMI=1,2,0,0,0");
 Serial.write(0xd);
 }
 void messageread(void)
@@ -455,64 +455,64 @@ messgae_letter=Serial.read();
 void readADS1231(void) 
 {
 adcvalue=0;  
-//digitalWrite(POWERDOWN, HIGH); //POWER ON
-while(digitalRead(DATAPIN));//WAIT UNTIL DATA IS READY
+//digitalWrite(POWERDOWN, HIGH); 
+while(digitalRead(DATAPIN));
 //24-->21
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X800000;} //24
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X800000;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X400000;}//23
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X400000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X200000;}//22
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X200000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X100000;}//21
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X100000;}
 //20-->17
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X80000;} //20
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X80000;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X40000;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X40000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X20000;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X20000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X10000;}//17
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X10000;}
 //16-->13
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X8000;} //16
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X8000;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X4000;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X4000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X2000;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X2000;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X1000;}//13
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X1000;}
 //12-->9
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X800;} //12
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X800;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X400;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X400;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X200;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X200;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X100;}//9
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X100;}
 //8-->5
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X80;} //8
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X80;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X40;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X40;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X20;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X20;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X10;}//5
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X10;}
 //4-->1
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X8;} //4
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X8;} 
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X4;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X4;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X2;}//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X2;}
 clock ();
-if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X1;}//1
-clock ();//TO PULL DATA READY TO HIGH STATE --PAGE No.14 ON ADS1231 DATASHEET
-//
+if(digitalRead(DATAPIN)){adcvalue=adcvalue+0X1;}
+clock ();
+
 digitalWrite(CLOCK, LOW);   
 
 }
@@ -520,19 +520,19 @@ void caliberate(void)
 {
   readADS1231();
  c=(adcvalue*115/53305);
- // Serial.print("caliber=");Serial.println(c);    
+   
 }
 
 void displaydata(void)
 {
       readADS1231();
- y=(adcvalue*115/53305);//100000
+ y=(adcvalue*115/53305);
  y=y-c;
 readADS1231();
- x=(adcvalue*115/53305);//100000
+ x=(adcvalue*115/53305);
  x=x-c;
 readADS1231();
-z=(adcvalue*115/53305);//100000
+z=(adcvalue*115/53305);
  z=z-c;
  y=(y+x+z)/3;
 // if(y>7000){y=y-7000;}
@@ -558,7 +558,7 @@ digitalWrite(CLOCK, LOW);
 char softme(void)
 {
   data=0;
-if(digitalRead(2)==0) //checks starting of signal
+if(digitalRead(2)==0)
 { 
 delayMicroseconds(102);
 if(digitalRead(2)==0)data |= 0;
