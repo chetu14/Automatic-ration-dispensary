@@ -1,23 +1,18 @@
-#include <LiquidCrystal.h>
 #include <SoftwareSerial.h>
 #include <Servo.h> 
 Servo myservo1; 
 SoftwareSerial pc(9, 10); 
 SoftwareSerial rfidreader(12, 13); 
-LiquidCrystal lcd(3, 4, 5, 6, 7, 8);
-#define oilmotor A2
 #define DATAPIN A5   
 #define CLOCK A4 
 int user=0;
 char rfid_data,messgae_letter,pc_data; 
-int user1_oil=5,user2_oil=8;
 int user1_rice=5,user2_rice=8;
 int item_name;
 int key;
 int bonus;
 int f;
 char data;
-int oil;
 long int  adcvalue,c,y,x,z;
 int total_amount,user1_amount=25,user2_amount=40;
 
@@ -28,7 +23,6 @@ pc.begin(9600);
 pc.println("SMART RATION SYSTEM");  
 rfidreader.begin(9600);
 Serial.begin(9600);
-pinMode(oilmotor,OUTPUT);
 myservo1.attach(A3);  
 myservo1.write(40);   
 delay(400);
@@ -50,85 +44,30 @@ else if(user==2){user2 ();}
 
 void user1 (void)
 {
-lcd.clear();lcd.setCursor(0, 0);lcd.print("ENTER "); lcd.print("1-KEROSENE");
-lcd.setCursor(0, 1);lcd.print("2-RICE");
+lcd.clear();lcd.setCursor(0, 0);lcd.print("ENTER "); 
+lcd.setCursor(0, 1);lcd.print("1-RICE");
 
-pc.println("ENTER "); pc.println("1-KEROSENE 2-RICE");
+pc.println("ENTER "); pc.println("1-RICE");
 pc.println("Enter key");
 pc_data=0;
 do
 {
 pc_data=softme();
-if(pc_data=='1' || pc_data=='2'){pc.println(" "); pc.println("key is correct");  }
+if(pc_data=='1'){pc.println(" "); pc.println("key is correct");  }
 else if(pc_data>10 && pc_data<250) { pc.println(" ");pc.println("Enter correct key");}
-}while(!(pc_data=='1' || pc_data=='2')); 
-if(pc_data=='1')oil1();
-else if(pc_data=='2')rice1();
+}while(!(pc_data=='1')); 
+if(pc_data=='1')rice1();
+else return;
 }
-void oil1 (void)
-{
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("KEROSENE BALANCE");lcd.setCursor(0, 1);
-lcd.print("IS ");lcd.print(user1_oil); 
-pc.print("KEROSENE BALANCE ="); pc.println(user1_oil);
 
-delay(2000);
-if(user1_oil>0)//oil section
-{
- lcd.clear(); lcd.setCursor(0, 0); lcd.print("ENTER KEROSENE");   
- lcd.setCursor(0, 1); lcd.print("QUANTITY ");  
- pc.println("ENTER KEROSENE QUANTITY ");
-pc_data=0;
-do
-{
-do
-{
-pc_data=softme();
-}while(!(pc_data>'0' && pc_data<':'));
-key=pc_data-0x30;
-if(user1_oil>0)
-{
-if(user1_oil >=key )
-{
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("processing.....");user=0;
-user1_oil=user1_oil-key;digitalWrite(oilmotor, HIGH); delay(key*2000);     digitalWrite(oilmotor, LOW);
 
-total_amount=3*key;
-user1_amount=user1_amount-total_amount;
-lcd.clear();lcd.setCursor(0, 0);
- lcd.print("KEROSENE BALANCE");lcd.setCursor(0, 1);
-lcd.print("IS ");lcd.print(user1_oil); delay(2000);
- message1();total_amount=0;
- lcd.clear();lcd.setCursor(0, 0);
-lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
- pc.println("swipe your rfid");
- oil=1;
-
- }
-//MORE THAN ASKED
-else {
-lcd.clear();lcd.setCursor(0, 0); oil=0;
-lcd.print("reduce your ");lcd.setCursor(0, 1);lcd.print("quantity & enter");
- pc.println("reduce your quantity & enter");
-delay(1000);  
-}
-}}
-while(oil==0);
-}
-else {user=0;
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
- pc.println("swipe your rfid");
-}  
-}
 
 void rice1(void)
 {
 lcd.clear();lcd.setCursor(0, 0);
 lcd.print("RICE BALANCE =");lcd.print(user1_rice); delay(2000);
 pc.print("RICE BALANCE ="); pc.println(user1_rice);
-if(user1_rice>0)//oil section
+if(user1_rice>0)
 {
  lcd.clear(); lcd.setCursor(0, 0); lcd.print("ENTER rice");   
  lcd.setCursor(0, 1); lcd.print("QUANTITY ");  
@@ -187,9 +126,9 @@ lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
 
 void user2 (void)
 {
-lcd.clear();lcd.setCursor(0, 0);lcd.print("ENTER "); lcd.print("1-KEROSENE");
-lcd.setCursor(0, 1);lcd.print("2-RICE");
-pc.println("ENTER "); pc.println("1-OIL 2-RICE");
+lcd.clear();lcd.setCursor(0, 0);lcd.print("ENTER "); lcd.print("1-RICE");
+lcd.setCursor(0, 1);;
+pc.println("ENTER "); pc.println("2-RICE");
 pc.println("Enter key");
 
 pc_data=0;
@@ -198,69 +137,11 @@ do
 pc_data=softme();
 if(pc_data=='1' || pc_data=='2'){pc.println(" "); pc.println("key is correct");  }
 else if(pc_data>10 && pc_data<250) { pc.println(" ");pc.println("Enter correct key");}
-}while(!(pc_data=='1' || pc_data=='2')); 
-if(pc_data=='1')oil2();
-else if(pc_data=='2')rice2();
+}while(!(pc_data=='1' )); 
+if(pc_data=='1')rice2();
+
 }
 
-void oil2 (void)
-{
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("KEROSENE BALANCE ");lcd.setCursor(0, 1);
-lcd.print("IS ");lcd.print(user2_oil); delay(2000);
-pc.print("KEROSENE BALANCE ="); pc.println(user2_oil);
-if(user2_oil>0)//oil section
-{
- lcd.clear(); lcd.setCursor(0, 0); lcd.print("ENTER KEROSENE ");   
- lcd.setCursor(0, 1); lcd.print("QUANTITY ");  
-pc_data=0;
-do
-{
-do
-{
-pc_data=softme();
-
-}while(!(pc_data>'0' && pc_data<':'));
-
-key=pc_data-0x30;
-
-if(user2_oil>0)
-{
-
-if(user2_oil >=key )
-{
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("processing.....");user=0;
-user2_oil=user2_oil-key;digitalWrite(oilmotor, HIGH); delay(key*2000);     digitalWrite(oilmotor, LOW);
-
- total_amount=3*key;
- user2_amount=user2_amount-total_amount;
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("KEROSENE BALANCE ");lcd.setCursor(0, 1);
-lcd.print("IS ");lcd.print(user2_oil); 
-pc.print("KEROSENE BALANCE ="); pc.println(user2_oil);delay(2000);
- message2(); total_amount=0;
- oil=1;
- lcd.clear();lcd.setCursor(0, 0);
-lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
- pc.println("swipe your rfid");
- }
-//MORE THAN ASKED
-else {
-lcd.clear();lcd.setCursor(0, 0); oil=0;
-lcd.print("reduce your ");lcd.setCursor(0, 1);lcd.print("quantity & enter");
- pc.println("reduce your quantity & enter");
-delay(2000);  
-}
-}}
-while(oil==0);
-}
-else {user=0;
-lcd.clear();lcd.setCursor(0, 0);
-lcd.print("swipe your");lcd.setCursor(0, 1);lcd.print("rfid");
- pc.println("swipe your rfid");
-}  
-}
 
 void rice2(void)
 {
@@ -407,7 +288,6 @@ Serial.print("8281964863");
 Serial.write(0X22);
 Serial.write(0xd);
 delay(1000);
-Serial.print("KEROSENE BALANCE IS ");Serial.print(user1_oil);
 Serial.print(",RICE BALANCE IS ");Serial.print(user1_rice);
 Serial.print(" ,TOTAL AMOUNT IS ");Serial.print(total_amount);
 Serial.print(" & BALANCE IS ");Serial.print(user1_amount);
@@ -425,7 +305,6 @@ Serial.print("9562868357");
 Serial.write(0X22);
 Serial.write(0xd);
 delay(1000);
-Serial.print("KEROSENE  BALANCE IS ");Serial.print(user2_oil);
 Serial.print(",RICE BALANCE IS ");Serial.print(user2_rice);
 Serial.print(", TOTAL AMOUNT IS ");Serial.print(total_amount);
 Serial.print(" & BALANCE IS ");Serial.print(user2_amount);
@@ -447,7 +326,7 @@ messgae_letter=Serial.read();
  if(messgae_letter=='Z'){
    while(!(Serial.available()>0));
    messgae_letter=Serial.read();
-   if(messgae_letter=='Z'){ user1_oil=user1_oil+5;user2_oil=user2_oil+8 ; }
+   }
   
  }
 }
